@@ -17,6 +17,23 @@ angular.module('reportingApp', [])
         this.getFilename = function(str) {
             return str.replace(/^.*[\\\/]/, '');
         };
+        this.view = 'all';
+        this.setView = function(_view){
+          this.view = _view;
+        };
+        this.showRow = function(result){
+            return this.view === 'all'||
+                (this.view === 'passed' && result.passed)||
+                (this.view === 'pending' && result.pending)||
+                (this.view === 'failed' && !result.passed && !result.pending);
+        };
+        this.totalCount = function(){
+            var totalCount = 0;
+            for(var i in this.results) {
+                totalCount++;
+            }
+            return totalCount;
+        };
         this.passCount = function() {
             var passCount = 0;
             for(var i in this.results) {

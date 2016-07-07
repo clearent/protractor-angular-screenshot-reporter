@@ -20,10 +20,23 @@
 <!-- Header -->
 <h2>
     Test Results
-    <button class="btn btn-sm pull-right" ng-click="moreDetails = !moreDetails">
-        <span ng-show="moreDetails">Less Detail</span>
-        <span ng-hide="moreDetails">More Detail</span>
-    </button>
+    <div class="pull-right" role="group" aria-label="...">
+        <div class="btn-group pull-left m-r" role="group" aria-label="...">
+            <button type="button" ng-click="ctrl.setView('all')" class="btn btn-sm btn-primary">All
+                <span class="badge">{{ctrl.totalCount()}}</span></button>
+            <button type="button" ng-click="ctrl.setView('passed')" class="btn btn-sm btn-success">Passed
+                <span class="badge">{{ctrl.passCount()}}</span></button>
+            <button type="button" ng-click="ctrl.setView('pending')" class="btn btn-sm btn-warning">Pending
+                <span class="badge">{{ctrl.pendingCount()}}</span></button>
+            <button type="button" ng-click="ctrl.setView('failed')" class="btn btn-sm btn-danger">Failed
+                <span class="badge">{{ctrl.failCount()}}</span></button>
+        </div>
+        <div class="pull-right" style="width:15px;"></div>
+        <button class="btn btn-sm pull-right" ng-click="moreDetails = !moreDetails">
+            <span ng-show="moreDetails">Less Detail</span>
+            <span ng-hide="moreDetails">More Detail</span>
+        </button>
+    </div>
 </h2>
 
 <!-- Pass/Fail counts -->
@@ -51,11 +64,11 @@
     </thead>
     <tbody ng-repeat="result in ctrl.results">
         <!-- Test Spec Header -->
-        <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description)">
+        <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description)" ng-show="ctrl.showRow(result)">
             <th class="suiteName" colspan="7">{{ctrl.currentParent = ctrl.getParent(result.description)}}</th>
         </tr>
 
-        <tr ng-class="{danger: !result.passed && !result.pending, warning: result.pending}">
+        <tr ng-class="{danger: !result.passed && !result.pending, warning: result.pending}" ng-show="ctrl.showRow(result)">
             <td>{{ctrl.getShortDescription(result.description)}}</td>
             <td>{{result.passed}}</td>
             <td ng-show="moreDetails">{{result.browser.name}} {{result.browser.version}}</td>
