@@ -48,58 +48,67 @@
     </tr>
 </table>
 
-<!-- Test Results Table -->
-<table class="table">
-    <thead>
-        <tr class="active">
-            <th>Description</th>
-            <th>Passed</th>
-            <th ng-show="moreDetails">Browser</th>
-            <th ng-show="moreDetails">Session ID</th>
-            <th ng-show="moreDetails">OS</th>
-            <th>Message</th>
-            <th></th>
-            <th>Screenshot</th>
-        </tr>
-    </thead>
-    <tbody ng-repeat="result in ctrl.results">
-        <!-- Test Spec Header -->
-        <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description)" ng-show="ctrl.showRow(result)">
-            <th class="suiteName" colspan="7">{{ctrl.currentParent = ctrl.getParent(result.description)}}</th>
-        </tr>
+<!-- Loading error message -->
+<div class="alert alert-danger" role="alert" ng-show="ctrl.errorLoading"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {{ctrl.loadingErrorMsg}}</div>
 
-        <tr ng-class="{danger: !result.passed && !result.pending, warning: result.pending}" ng-show="ctrl.showRow(result)">
-            <td>{{ctrl.getShortDescription(result.description)}}</td>
-            <td>{{result.passed}}</td>
-            <td ng-show="moreDetails">{{result.browser.name}} {{result.browser.version}}</td>
-            <td ng-show="moreDetails">{{result.sessionId}}</td>
-            <td ng-show="moreDetails">{{result.os}}</td>
-            <td>{{result.message}}</td>
-            <td>
-                <!-- Show stacktrace if failure -->
-                <div ng-if="!result.passed && !result.pending">
-                    <button class="btn btn-default" data-toggle="modal" data-target="#modal{{$index}}">View Stack Trace</button>
-                    <!-- Stacktrace Modal -->
-                    <div class="modal fade" id="modal{{$index}}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{$index}}">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="modalLabel{{$index}}">Stack Trace: {{ctrl.getShortDescription(result.description)}}</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <pre>{{result.trace}}</pre>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
+<!-- Loading report data message -->
+<div class="alert alert-info" role="alert" ng-show="ctrl.loadingData"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Loading report data . . .</div>
+
+<!-- Loading report data message -->
+<div class="alert alert-success" role="alert" ng-show="ctrl.renderingData"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Rendering report data . . .</div>
+
+<!-- Test Results Table -->
+<table class="table" ng-show="!ctrl.loadingData && !ctrl.errorLoading && !ctrl.renderingData" >
+    <thead>
+    <tr class="active">
+        <th>Description</th>
+        <th>Passed</th>
+        <th ng-show="moreDetails">Browser</th>
+        <th ng-show="moreDetails">Session ID</th>
+        <th ng-show="moreDetails">OS</th>
+        <th>Message</th>
+        <th></th>
+        <th>Screenshot</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="result in ctrl.results" on-finish-render="ctrl.renderComplete()">
+    <!-- Test Spec Header -->
+    <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description)" ng-show="ctrl.showRow(result)">
+        <th class="suiteName" colspan="7">{{ctrl.currentParent = ctrl.getParent(result.description)}}</th>
+    </tr>
+
+    <tr ng-class="{danger: !result.passed && !result.pending, warning: result.pending}" ng-show="ctrl.showRow(result)">
+        <td>{{ctrl.getShortDescription(result.description)}}</td>
+        <td>{{result.passed}}</td>
+        <td ng-show="moreDetails">{{result.browser.name}} {{result.browser.version}}</td>
+        <td ng-show="moreDetails">{{result.sessionId}}</td>
+        <td ng-show="moreDetails">{{result.os}}</td>
+        <td>{{result.message}}</td>
+        <td>
+            <!-- Show stacktrace if failure -->
+            <div ng-if="!result.passed && !result.pending">
+                <button class="btn btn-default" data-toggle="modal" data-target="#modal{{$index}}">View Stack Trace</button>
+                <!-- Stacktrace Modal -->
+                <div class="modal fade" id="modal{{$index}}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{$index}}">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="modalLabel{{$index}}">Stack Trace: {{ctrl.getShortDescription(result.description)}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <pre>{{result.trace}}</pre>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </td>
-            <td>
-              <div ng-if="!result.pending">
+            </div>
+        </td>
+        <td>
+            <div ng-if="!result.pending">
                 <button class="btn btn-default" data-toggle="modal" data-target="#imageModal{{$index}}">View Screenshot</button>
                 <!-- Screenshot Modal -->
                 <div class="modal fade" id="imageModal{{$index}}" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel{{$index}}">
@@ -119,9 +128,9 @@
                         </div>
                     </div>
                 </div>
-              </div>
-            </td>
-        </tr>
+            </div>
+        </td>
+    </tr>
     </tbody>
 </table>
 {{ctrl.currentParent = "";""}}
