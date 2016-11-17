@@ -73,6 +73,13 @@
     </thead>
     <tbody ng-repeat="result in ctrl.results" on-finish-render="ctrl.renderComplete()">
     <!-- Test Spec Header -->
+<!--
+    This header is only built once per spec with individual tests below it . . .
+        ng-if="ctrl.currentParent != ctrl.getParent(result.description)"
+    But it is shown only if the last test matches what the user wants to see (all, passed, pending, failed)
+        ng-show="ctrl.showRow(result)"
+    Need to make it so the heading shows whenever any of it's children show
+-->
     <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description)" ng-show="ctrl.showRow(result)">
         <th class="suiteName" colspan="7">{{ctrl.currentParent = ctrl.getParent(result.description)}}</th>
     </tr>
